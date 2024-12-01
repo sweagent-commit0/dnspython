@@ -50,7 +50,7 @@ class NXDOMAIN(dns.exception.DNSException):
     @property
     def canonical_name(self):
         """Return the unresolved canonical name."""
-        pass
+        return self.qnames()[0] if self.qnames() else None
 
     def __add__(self, e_nx):
         """Augment by results from another NXDOMAIN exception."""
@@ -69,7 +69,7 @@ class NXDOMAIN(dns.exception.DNSException):
 
         Returns a list of ``dns.name.Name``.
         """
-        pass
+        return self.kwargs.get('qnames', [])
 
     def responses(self):
         """A map from queried names to their NXDOMAIN responses.
@@ -77,14 +77,14 @@ class NXDOMAIN(dns.exception.DNSException):
         Returns a dict mapping a ``dns.name.Name`` to a
         ``dns.message.Message``.
         """
-        pass
+        return self.kwargs.get('responses', {})
 
     def response(self, qname):
         """The response for query *qname*.
 
         Returns a ``dns.message.Message``.
         """
-        pass
+        return self.responses().get(qname)
 
 class YXDOMAIN(dns.exception.DNSException):
     """The DNS query name is too long after DNAME substitution."""
@@ -92,7 +92,7 @@ ErrorTuple = Tuple[Optional[str], bool, int, Union[Exception, str], Optional[dns
 
 def _errors_to_text(errors: List[ErrorTuple]) -> List[str]:
     """Turn a resolution errors trace into a list of text."""
-    pass
+    return [f"{nameserver}: {error}" for nameserver, _, _, error, _ in errors if nameserver is not None]
 
 class LifetimeTimeout(dns.exception.Timeout):
     """The resolution lifetime expired."""
